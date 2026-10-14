@@ -34,14 +34,15 @@ class CarView extends WatchUi.View {
         // Status line
         var status = "GPS OK";
         var color = Graphics.COLOR_GREEN;
-        if (!drive.hasFix()) {
-            status = "GPS...";
-            color = Graphics.COLOR_YELLOW;
-        } else if (drive.isOffCourse()) {
+        if (drive.isOffCourse()) {
             status = "OFF COURSE";
             color = Graphics.COLOR_RED;
         } else if (drive.session != null) {
             status = drive.isRecording() ? "REC" : "PAUSED";
+            color = drive.isRecording() ? Graphics.COLOR_RED : Graphics.COLOR_YELLOW;
+        }
+        if (!drive.hasFix()) {
+            status = drive.session != null ? status + " GPS..." : "GPS...";
             color = drive.isRecording() ? Graphics.COLOR_RED : Graphics.COLOR_YELLOW;
         }
         dc.setColor(color, Graphics.COLOR_TRANSPARENT);

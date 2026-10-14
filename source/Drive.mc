@@ -154,7 +154,9 @@ class Drive {
             return;
         }
         var spd = speed();
-        if (spd >= stopMps) {
+        if (!hasFix()) {
+            // no GPS yet: the timer still runs, but the time is neither moving nor stopped
+        } else if (spd >= stopMps) {
             moving++;
             stopRun = 0;
         } else {
