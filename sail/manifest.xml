@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
+    <iq:application entry="SailApp" id="8e1f3a5c7b9d4e2fa0c6b8d1e3f5a7c9" launcherIcon="@Drawables.LauncherIcon" minApiLevel="3.3.0" name="@Strings.AppName" type="datafield" version="0.1.0">
+        <iq:products>
+            <iq:product id="fr955"/>
+        </iq:products>
+        <iq:permissions/>
+        <iq:languages>
+            <iq:language>eng</iq:language>
+        </iq:languages>
+    </iq:application>
+</iq:manifest>
