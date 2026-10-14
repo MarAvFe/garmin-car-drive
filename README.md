@@ -55,6 +55,14 @@ Standard session fields include max speed, average speed, distance, ascent and d
 `build.sh` points the Linux compiler at the Windows SDK and devices. The simulator runs on Windows:
 `monkeydo.bat build\Car.prg fr955`. In the simulator, set Simulation → Activity Data → ▶ and Settings → Set GPS Quality → Good.
 
+## Install on the watch
+1. `./build.sh` (makes `build/Car.prg`).
+2. Plug the watch in over USB. On Windows it shows up as a device (MTP) named "Forerunner 955".
+3. Copy `Car.prg` into `Internal Storage\GARMIN\APPS\`.
+4. Unplug. On the watch: START → scroll the activity/app list → **Car** (add it to favourites from there).
+
+To update, copy over the same file. To remove it, delete it from `GARMIN\APPS`. Settings are kept until then.
+
 ## Phase 0 findings (SDK 9.2.0 docs and the fr955 device API)
 | # | Question | Finding |
 |---|---|---|
