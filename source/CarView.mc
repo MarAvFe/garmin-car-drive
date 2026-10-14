@@ -68,7 +68,7 @@ class CarView extends WatchUi.View {
 
         // Heading from GPS course (compass is unreliable inside a car) | altitude
         var hdg = "--";
-        if (drive.gps.heading != null && spd >= drive.stopMps) {
+        if (drive.hasFix() && drive.gps.heading != null && spd >= drive.stopMps) {
             var deg = (Math.toDegrees(drive.gps.heading).toNumber() + 360) % 360;
             hdg = cardinal(deg) + " " + deg;
         }
