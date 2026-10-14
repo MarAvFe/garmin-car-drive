@@ -28,15 +28,19 @@ class PageDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onNextPage() as Boolean {
-        return show(page + 1, WatchUi.SLIDE_UP);
+        return show(1, WatchUi.SLIDE_UP);
     }
 
     function onPreviousPage() as Boolean {
-        return show(page + 2, WatchUi.SLIDE_DOWN);
+        return show(2, WatchUi.SLIDE_DOWN);
     }
 
-    function show(p as Number, slide as WatchUi.SlideType) as Boolean {
-        p = p % 3;
+    // step 1 = next, 2 = previous (mod 3)
+    function show(step as Number, slide as WatchUi.SlideType) as Boolean {
+        var p = (page + step) % 3;
+        if (p == 1 && !getApp().drive.seenFix) {
+            p = (p + step) % 3; // the native map view crashes if it has never had a position
+        }
         WatchUi.switchToView(getApp().pages[p], new PageDelegate(p), slide);
         return true;
     }
@@ -47,9 +51,10 @@ class PageDelegate extends WatchUi.BehaviorDelegate {
             map.setMapMode(map.getMapMode() == WatchUi.MAP_MODE_BROWSE ? WatchUi.MAP_MODE_PREVIEW : WatchUi.MAP_MODE_BROWSE);
         } else if (getApp().drive.session == null) {
             var menu = new WatchUi.Menu2({:title => "Settings"});
-            menu.addItem(new WatchUi.ToggleMenuItem("Navigation", null, "navOn", Properties.getValue("navOn") as Boolean, null));
-            menu.addItem(new WatchUi.MenuItem("Stopped below", Properties.getValue("stopKmh") + " km/h", "stopKmh", null));
-            menu.addItem(new WatchUi.MenuItem("Off-course alert", Properties.getValue("offCourseM") + " m", "offCourseM", null));
+            var d = getApp().drive;
+            menu.addItem(new WatchUi.ToggleMenuItem("Navigation", null, "navOn", d.navOn, null));
+            menu.addItem(new WatchUi.MenuItem("Stopped below", d.stopKmh + " km/h", "stopKmh", null));
+            menu.addItem(new WatchUi.MenuItem("Off-course alert", d.offCourseM + " m", "offCourseM", null));
             WatchUi.pushView(menu, new SettingsDelegate(), WatchUi.SLIDE_UP);
         }
         return true;
@@ -82,7 +87,7 @@ class StopMenuDelegate extends WatchUi.Menu2InputDelegate {
             drive.start();
         } else if (id == :save) {
             drive.save();
-            WatchUi.pushView(new StatsView(drive, drive.summary), new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_UP);
+            WatchUi.pushView(new DataPage(drive, :summary), new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_UP);
         } else {
             // No -> stays paused; START resumes
             WatchUi.pushView(new WatchUi.Confirmation("Discard drive?"), new DiscardDelegate(), WatchUi.SLIDE_IMMEDIATE);

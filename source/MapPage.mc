@@ -33,13 +33,21 @@ class MapPage extends WatchUi.MapTrackView {
         if (shownVer != drive.mapVer) {
             clear();
             // unverified: in the simulator only one line showed; route goes last so it wins when nav is on
-            if (drive.trail != null) {
+            if (drive.trail != null && drive.trailN >= 2) {
                 setPolyline(drive.trail);
             }
             if (drive.navOn && drive.routeLine != null) {
                 setPolyline(drive.routeLine);
             }
             shownVer = drive.mapVer;
+        }
+        if (!drive.hasFix()) {
+            // don't render a position-tracking map with no position
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_WHITE);
+            dc.clear();
+            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+            dc.drawText(dc.getWidth() / 2, dc.getHeight() / 2, Graphics.FONT_SMALL, "Map: waiting for GPS", Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+            return;
         }
         MapView.onUpdate(dc);
 

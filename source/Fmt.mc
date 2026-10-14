@@ -14,7 +14,7 @@ function speedUnit() as String {
 }
 
 function fmtDist(m as Float?) as String {
-    return (m == null ? 0.0 : m / (metric() ? 1000.0 : 1609.344)).format("%.1f") + (metric() ? " km" : " mi");
+    return (m == null || !(m > 0) ? 0.0 : m / (metric() ? 1000.0 : 1609.344)).format("%.1f") + (metric() ? " km" : " mi");
 }
 
 function fmtAlt(m as Numeric?) as String {

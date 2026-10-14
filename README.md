@@ -2,25 +2,26 @@
 
 A Connect IQ **watch app** for the Forerunner 955 / Solar (`fr955`, API 5.2, SDK 9.2.0). It records car drives as a `SPORT_DRIVING` FIT activity, so running and cycling stats and PRs are left alone.
 
-| Drive | Map | Stats |
-|---|---|---|
-| ![drive](docs/drive.png) | ![map](docs/map.png) | ![stats](docs/stats.png) |
-| **Summary after save** | **Settings** | **Off course (nav on)** |
-| ![summary](docs/summary.png) | ![settings](docs/settings.png) | ![off course](docs/offcourse.png) |
+| Drive (recording, no GPS yet) | More | Map | Settings |
+|---|---|---|---|
+| ![drive](docs/drive.png) | ![more](docs/stats.png) | ![map](docs/map.png) | ![settings](docs/settings.png) |
 
-<sub>Simulator screenshots: random simulated data, and the simulator was set to statute units. The off-course shot is from a build whose overlay text was clipped; the text is smaller now.</sub>
+<sub>Simulator screenshots, statute units. The summary after saving uses the same white style, with one line per value.</sub>
 
 ## Use
 | Button | Action |
 |---|---|
 | START | Start the drive. Pressing it again pauses and opens Resume / Save / Discard. Discard asks for confirmation. Save shows the summary. |
-| UP / DOWN | Switch pages: Drive → Map → Stats |
+| UP / DOWN | Switch pages: Drive → Map → More. The map is skipped until GPS has had its first fix. |
 | Hold UP | Idle: settings. Map page: pan/zoom mode (BACK leaves it) |
 | BACK | Ignored while a drive is open. If the app is closed anyway, the open drive is saved. |
 
-- **Drive page:** clock and battery, status (GPS… / GPS OK / REC / PAUSED / OFF COURSE), current speed, max speed, distance, timer, GPS heading, altitude.
+Screens look like a standard Garmin activity screen: white background, one field per row, with a small title above a big value. The coloured band at the top shows status: green = GPS OK / REC, orange = no GPS, grey = paused, red = off course. The clock and battery are at the bottom.
+- **Drive page:** speed, max speed, distance, timer.
+- **More page:** average moving speed, stopped time (and number of stops), heading, altitude.
+- **No GPS:** START records right away. The timer runs and GPS keeps searching for the whole drive. Time without a fix counts toward neither moving nor stopped time. If GPS drops, the map page shows "waiting for GPS" instead of the map.
 - **Map page:** the watch's own map centred on you, your blue breadcrumb, and the purple route when navigation is on, with distance left or distance and time off course.
-- **Stats page / summary:** max speed, average moving speed, distance, total time, moving and stopped time, number of stops (stopped ≥ 10 s), ascent and descent, min and max altitude.
+- **Summary after save:** max speed, average moving speed, distance, total time, moving and stopped time, number of stops (stopped ≥ 10 s), ascent and descent, min and max altitude.
 - **Vibration** on start and pause. Leaving the route for more than 5 s triggers a tone and a long vibration.
 - **Units** follow the watch's system settings.
 

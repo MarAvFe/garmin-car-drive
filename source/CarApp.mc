@@ -34,6 +34,9 @@ class CarApp extends Application.AppBase {
 
     function onPosition(info as Position.Info) as Void {
         drive.gps = info;
+        if (drive.hasFix()) {
+            drive.seenFix = true;
+        }
     }
 
     function tick() as Void {
@@ -47,7 +50,7 @@ class CarApp extends Application.AppBase {
     }
 
     function getInitialView() as [Views] or [Views, InputDelegates] {
-        pages = [new CarView(drive), new MapPage(drive), new StatsView(drive, null)];
+        pages = [new DataPage(drive, :drive), new MapPage(drive), new DataPage(drive, :more)];
         return [pages[0], new PageDelegate(0)];
     }
 }

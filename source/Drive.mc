@@ -19,9 +19,11 @@ const EARTH_R = 6371000.0;
 class Drive {
 
     var gps as Position.Info?;
+    var seenFix as Boolean = false;
     var session as ActivityRecording.Session?;
     var summary as Dictionary?; // stats of the last saved drive
 
+    var stopKmh as Number = 2;
     var stopMps as Float = 0.56;
     var offCourseM as Number = 100;
     var navOn as Boolean = false;
@@ -51,9 +53,10 @@ class Drive {
     }
 
     function loadSettings() as Void {
-        stopMps = (Properties.getValue("stopKmh") as Number) / 3.6;
-        offCourseM = Properties.getValue("offCourseM") as Number;
-        navOn = Properties.getValue("navOn") as Boolean;
+        stopKmh = prop("stopKmh", 2) as Number;
+        stopMps = stopKmh / 3.6;
+        offCourseM = prop("offCourseM", 100) as Number;
+        navOn = prop("navOn", false) as Boolean;
         if (navOn && rLat == null) {
             loadRoute();
         }
@@ -85,7 +88,7 @@ class Drive {
     }
 
     function hasFix() as Boolean {
-        return gps != null && gps.accuracy >= Position.QUALITY_USABLE;
+        return gps != null && gps.position != null && gps.accuracy != null && gps.accuracy >= Position.QUALITY_USABLE;
     }
 
     function isRecording() as Boolean {
@@ -127,6 +130,9 @@ class Drive {
     }
 
     function pause() as Void {
+        if (session == null) {
+            return;
+        }
         session.stop();
         buzz(200);
     }
@@ -170,7 +176,8 @@ class Drive {
         fields[1].setData(stopped);
         fields[2].setData(stops);
 
-        var alt = Activity.getActivityInfo().altitude;
+        var info = Activity.getActivityInfo();
+        var alt = info != null ? info.altitude : null;
         if (alt != null) {
             altMin = altMin == null || alt < altMin ? alt : altMin;
             altMax = altMax == null || alt > altMax ? alt : altMax;
@@ -204,20 +211,33 @@ class Drive {
         }
     }
 
+    // Everything the screens show, null where there's no data yet (no GPS, no session)
     function stats() as Dictionary {
-        var i = Activity.getActivityInfo();
-        return {
-            :max => i.maxSpeed,
-            :dist => i.elapsedDistance,
-            :elapsed => i.elapsedTime != null ? i.elapsedTime / 1000 : 0,
+        var s = {
+            :speed => hasFix() ? speed() : null,
+            :heading => null,
             :moving => moving,
             :stopped => stopped,
             :stops => stops,
-            :ascent => i.totalAscent,
-            :descent => i.totalDescent,
             :altMin => altMin,
-            :altMax => altMax
+            :altMax => altMax,
+            :timer => 0,
+            :elapsed => 0
         };
+        if (hasFix() && gps.heading != null && speed() >= stopMps) {
+            s[:heading] = (Math.toDegrees(gps.heading).toNumber() + 360) % 360;
+        }
+        var i = Activity.getActivityInfo();
+        if (i != null) {
+            s[:max] = i.maxSpeed;
+            s[:dist] = i.elapsedDistance;
+            s[:alt] = i.altitude;
+            s[:ascent] = i.totalAscent;
+            s[:descent] = i.totalDescent;
+            s[:timer] = i.timerTime != null ? i.timerTime / 1000 : 0;
+            s[:elapsed] = i.elapsedTime != null ? i.elapsedTime / 1000 : 0;
+        }
+        return s;
     }
 
     function buzz(ms as Number) as Void {
@@ -260,4 +280,9 @@ function routeFix(lat as Float, lon as Float, rLat as Array<Float>, rLon as Arra
     }
     var done = rCum[bi] + bt * (rCum[bi + 1] - rCum[bi]);
     return [Math.sqrt(best).toFloat(), (rCum[rCum.size() - 1] - done).toFloat()];
+}
+
+function prop(key as String, dflt as PropertyValueType) as PropertyValueType {
+    var v = Properties.getValue(key);
+    return v != null ? v : dflt;
 }
