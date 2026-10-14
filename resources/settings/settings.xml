@@ -1,0 +1,11 @@
+<settings>
+    <setting propertyKey="@Properties.stopKmh" title="@Strings.StopKmh">
+        <settingConfig type="numeric" min="1" max="20"/>
+    </setting>
+    <setting propertyKey="@Properties.navOn" title="@Strings.NavOn">
+        <settingConfig type="boolean"/>
+    </setting>
+    <setting propertyKey="@Properties.offCourseM" title="@Strings.OffCourseM">
+        <settingConfig type="numeric" min="20" max="1000"/>
+    </setting>
+</settings>

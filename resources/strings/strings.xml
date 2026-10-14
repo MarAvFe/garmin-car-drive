@@ -1,0 +1,6 @@
+<strings>
+    <string id="AppName">Car</string>
+    <string id="StopKmh">Stopped below (km/h)</string>
+    <string id="NavOn">Navigation</string>
+    <string id="OffCourseM">Off-course alert (m)</string>
+</strings>

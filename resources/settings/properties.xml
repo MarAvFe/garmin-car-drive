@@ -1,0 +1,5 @@
+<properties>
+    <property id="stopKmh" type="number">2</property>
+    <property id="navOn" type="boolean">false</property>
+    <property id="offCourseM" type="number">100</property>
+</properties>
